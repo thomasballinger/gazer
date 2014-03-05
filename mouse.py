@@ -5,14 +5,20 @@ http://stackoverflow.com/questions/281133/controlling-the-mouse-from-python-in-o
 
 #!/usr/bin/python
 
-import objc
+import sys
 
 def setMousePosition(x, y):
-    bndl = objc.loadBundle('CoreGraphics', globals(),
+    if sys.platform == "linux2":
+        import subprocess
+        subprocess.call(['xdotool', 'mousemove', str(x), str(y)])
+    elif sys.platform == "darwin": 
+        import objc
+        bndl = objc.loadBundle('CoreGraphics', globals(),
             '/System/Library/Frameworks/ApplicationServices.framework')
-    objc.loadBundleFunctions(bndl, globals(),
+        objc.loadBundleFunctions(bndl, globals(),
             [('CGWarpMouseCursorPosition', 'v{CGPoint=dd}')])
-    CGWarpMouseCursorPosition((x, y))
+        CGWarpMouseCursorPosition((x, y)) 
+
 
 if __name__ == "__main__":
     setMousePosition(200, 200)
